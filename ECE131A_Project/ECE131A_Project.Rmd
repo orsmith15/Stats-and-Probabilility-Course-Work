@@ -1,0 +1,317 @@
+---
+title: "ECE131A_Project"
+author: "Olivia Smith"
+date: "2023-03-21"
+output: html_document
+---
+
+# 1.
+### a
+```{r}
+set.seed(123) # So you can check the replication of this simulation 
+
+#Rolling the samples 
+samp_rolls50 <- replicate(50, sample(1:10, 1))
+samp_rolls100 <- replicate(100, sample(1:10, 1))
+samp_rolls1000 <- replicate(1000, sample(1:10, 1))
+samp_rolls2000 <- replicate(2000, sample(1:10, 1))
+samp_rolls3000 <- replicate(3000, sample(1:10, 1))
+samp_rolls10000 <- replicate(10000, sample(1:10, 1))
+samp_rolls100000 <- replicate(100000, sample(1:10, 1))
+
+#Finding the probability of rolling odds for each one
+
+p50<-mean(samp_rolls50 == 1|samp_rolls50==3|samp_rolls50 == 5|samp_rolls50==7|samp_rolls50 == 9)
+p100<-mean(samp_rolls100 == 1|samp_rolls100==3|samp_rolls100 == 5|samp_rolls100==7|samp_rolls100 == 9)
+p1000<-mean(samp_rolls1000 == 1|samp_rolls1000==3|samp_rolls1000 == 5|samp_rolls1000==7|samp_rolls1000 == 9)
+p2000<-mean(samp_rolls2000 == 1|samp_rolls2000==3|samp_rolls2000 == 5|samp_rolls2000==7|samp_rolls2000 == 9)
+p3000<-mean(samp_rolls3000 == 1|samp_rolls3000==3|samp_rolls3000 == 5|samp_rolls3000==7|samp_rolls3000 == 9)
+p10000<-mean(samp_rolls10000 == 1|samp_rolls10000==3|samp_rolls10000 == 5|samp_rolls10000==7|samp_rolls10000 == 9)
+p100000<-mean(samp_rolls100000 == 1|samp_rolls100000==3|samp_rolls100000 == 5|samp_rolls100000==7|samp_rolls100000 == 9)
+
+#Printing those probabilities 
+p50 # 50 tosses
+p100 # 100 tosses
+p1000 # 1000 tosses
+p2000 # 2000 tosses
+p3000 # 3000 tosses
+p10000 # 10000 tosses
+```
+#### Due to the idea of the law of large numbers. The closer that you get to infinite the more likely you are going to obtain the actual probability. In my simulation therefore, we would take the largest number as the closest number to the probability of obtaining an odd number. In this case that probability is 0.5007. 
+
+
+### d
+```{r}
+double <-c(2,1,2,1,2,1,2,1,2,1) #vector for weights of 1-10
+
+#generating sample rolls with probability of double for odd numbers
+samp2_rolls50 <- replicate(50, sample(1:10, 1, prob = double))
+samp2_rolls100 <- replicate(100, sample(1:10, 1,prob = double))
+samp2_rolls1000 <- replicate(1000, sample(1:10, 1,prob = double))
+samp2_rolls2000 <- replicate(2000, sample(1:10, 1,prob = double))
+samp2_rolls3000 <- replicate(3000, sample(1:10, 1,prob = double))
+samp2_rolls10000 <- replicate(10000, sample(1:10, 1,prob = double))
+samp2_rolls100000 <- replicate(100000, sample(1:10, 1,prob = double))
+
+#function for calculating and printing the mean 
+mean.funct <- function(a) {
+   mean<-mean(a == 1|a==3|a == 5|a==7|a == 9)
+   print(mean)
+}
+
+#calculating and printing the mean 
+mean.funct(samp2_rolls50)
+mean.funct(samp2_rolls100)
+mean.funct(samp2_rolls1000)
+mean.funct(samp2_rolls2000)
+mean.funct(samp2_rolls3000)
+mean.funct(samp2_rolls10000)
+mean.funct(samp2_rolls100000)
+
+```
+#### Based on my simulation of odd value having twice as likely probability of showing up than an even number the probability of obtaining an odd number is 0.6677. Based on mathematical analysis and probability theory we expect the probability that X has an odd value to be 2/3. This agrees with empirical probability as the theoretical is equal to 0.666667 which is very close to 0.6677. 
+
+
+
+# 2
+
+```{r}
+data<-read.delim(file.choose(), header=FALSE)
+```
+## b
+```{r}
+mu_MLE = mean(data$V1)
+print(paste("mu_MLE =", mu_MLE) )
+
+sigma_MLE = sqrt(var(data$V1))
+print(paste("sigma_MLE =", sigma_MLE) )
+```
+## c
+```{r}
+library(mosaic)
+hist(data$V1, main ="Probability Density Function of Xi", xlab ="Xi's", prob = TRUE) # maybe change the bin width 
+curve(dnorm(x, mu_MLE,sigma_MLE), add = TRUE)
+```
+```{r}
+userData <-read.csv("user_data.csv")
+bought <- userData$Bought #B
+spenderType <- userData$SpenderType #T
+sex <- userData$Sex #S
+age <- userData$Age #A
+```
+# 3
+## a
+### PMFs for B, T, S, and A
+```{r}
+#B
+boughtTable<-prop.table(table(bought))
+print("The proportion table for people that bought is shown below where 1 = those that bought and 0 = those that did not buy")
+boughtTable
+#T
+spenderTypeTable<-prop.table(table(spenderType))
+print("The proportion table for spender type is shown below where 1 = larger spender, 2 = medium spender, 3 = smaller spender")
+spenderTypeTable
+#S
+sexTable<-prop.table(table(sex))
+print("The proportion table for sex type is shown below where 1 = Male and 0 = Female)")
+sexTable
+#A
+ageTable<-prop.table(table(age))
+print("The proportion table for age type is shown below")
+ageTable
+```
+
+```{r}
+
+plot(boughtTable, main = "Bought PMF", ylab= "Probability",xlab="Bought (0 = No, 1 = Yes)")
+plot(spenderTypeTable, main = "Spender Type PMF", ylab= "Probability",xlab="Spender Type (1 = Large Spender, 2 = Medium Spender, 3 = Small Spender)")
+plot(sexTable, main = "Sex PMF", ylab= "Probability",xlab="Sex (1 = Male, 0 = Female)")
+plot(ageTable, main = "Age PMF", ylab= "Probability",xlab="Age (Years)")
+```
+## b 
+```{r}
+#Sorts out the data into bought or not bought 
+B0<-userData[userData$Bought == 0,]
+B1<-userData[userData$Bought == 1,]
+
+#calculates the proportion tables to each condition
+B0condSpenderType <- prop.table(table(B0$SpenderType))
+B0condSex <- prop.table(table(B0$Sex))
+B0condAge <- prop.table(table(B0$Age))
+
+B1condSpenderType <- prop.table(table(B1$SpenderType))
+B1condSex <- prop.table(table(B1$Sex))
+B1condAge <- prop.table(table(B1$Age))
+
+#prints out the tables for each condition 
+print("The proportion table for spender type conditioned on not bought is shown below where 1 = larger spender, 2 = medium spender, 3 = smaller spender")
+B0condSpenderType
+print("The proportion table for sex type conditioned on not bought is shown below where 1 = Male and 0 = Female)")
+B0condSex
+print("The proportion table for age type conditioned on not bought is shown below")
+B0condAge
+
+print("The proportion table for spender type conditioned on bought is shown below where 1 = larger spender, 2 = medium spender, 3 = smaller spender")
+B1condSpenderType
+print("The proportion table for sex type conditioned on bought is shown below where 1 = Male and 0 = Female)")
+B1condSex
+print("The proportion table for age type conditioned on bought is shown below")
+B1condAge
+
+
+plot(B0condSpenderType, main = "Spender Type PMF Conditioned on the Person NOT Buying", ylab= "Probability",xlab="Spender Type (1 = Large Spender, 2 = Medium Spender, 3 = Small Spender)")
+plot(B1condSpenderType, main = "Spender Type PMF Conditioned on the Person Buying", ylab= "Probability",xlab="Spender Type (1 = Large Spender, 2 = Medium Spender, 3 = Small Spender)")
+
+plot(B0condSex, main = "Sex PMF Conditioned on the Person NOT Buying", ylab= "Probability",xlab="Sex (1 = Male, 0 = Female)")
+plot(B1condSex, main = "Sex PMF Conditioned on the Person Buying", ylab= "Probability",xlab="Sex (1 = Male, 0 = Female)")
+
+plot(B0condAge, main = "Age PMF Conditioned on the Person NOT Buying", ylab= "Probability",xlab="Age (Years)")
+plot(B1condAge, main = "Age PMF Conditioned on the Person Buying", ylab= "Probability",xlab="Age (Years)")
+```
+## c
+```{r}
+#From tables above we can paste in the values 
+pB0 <-0.6144307 # proportion of users that did not buy
+pT1B0 <-0.1688073 # proportion of users that are type 1 spenders conditioned on them not buying
+pS0B0 <-0.8477064 # proportion of users that are female conditioned on them not buying 
+
+
+Age55 <- userData[userData$Age <=55,]
+B0Age55 <- Age55[Age55$Bought == 0,]
+tally(B0Age55)
+tally(B0)
+
+pB0A55 <- 432/545 # proportion of users that are below 55
+
+pIntersectB0 = pB0*pT1B0*pS0B0*pB0A55
+print(paste("P(B = 0, T = 1, S = 0, A ≤ 55) = ", pIntersectB0) )
+
+```
+
+```{r}
+pB1 <-0.3855693# proportion of users that bought
+pT1B1 <- 0.3976608# proportion of users that are type 1 spenders conditioned on them buying
+pS0B1 <- 0.3245614# proportion of users that are female conditioned on them buying 
+  Age55 <- userData[userData$Age <=55,]
+    B1Age55 <- Age55[Age55$Bought == 1,]
+  tally(B1Age55)
+  tally(B1)
+
+pB1A55 <- 276/342 # proportion of users that are below 55 conditioned on them buying
+
+pIntersectB1 = pB1*pT1B1*pS0B1*pB1A55
+print(paste("P(B = 1, T = 1, S = 0, A ≤ 55) = ", pIntersectB1) )
+```
+## d
+```{r}
+pT1<-0.2570462
+pS0<-0.6459977
+
+Age55 <- userData[userData$Age <=55,]
+tally(Age55)
+tally(userData)
+pA55<-708/887
+
+
+B0conditioned <-pIntersectB0/(pT1*pS0*pA55)
+print(paste("P(B = 0|T = 1, S = 0, A ≤ 55) = ", B0conditioned) )
+
+
+
+B1conditioned <-pIntersectB1/(pT1*pS0*pA55)
+print(paste("P(B = 1|T = 1, S = 0, A ≤ 55) = ", B1conditioned) )
+```
+#### Based on the probabilities listed above we know that the probability of a female, whos age is below 55 and who is a large spender will buy this product is about to equal to 0.303 while the probability that she will not buy the product is 0.523. Therefore we can predict that she will not buy this product. 
+
+# Question 4
+## a and c
+```{r}
+set.seed(123)
+samples = 10000
+x.samples <- replicate(100,runif(samples,min=3,max=7)) # creates the uniform samples of x, 100 of them
+
+
+sn <-c(2,3,10,30,100) # this is for the value of n
+sn1 <-c("2","3","10","30","100") # this is for naming the graphs
+
+mu <- 5 # E[X]
+
+Zn1<- x.samples[,1] # n=1
+hist(Zn1,xlab="z", ylab="Density" ,main=substitute(paste('PDF Density of ',Z[1])), prob=TRUE, ylim =c(0,0.4),breaks = seq(from=3, to=7, by=1/2) )
+curve(dnorm(x, mu,sqrt(4/3)), add = TRUE)
+
+#loop that counts up the rest of the conditions of n and names them appropriately 
+for(i in sn){
+  Zn<-rowSums(x.samples[,1:i])/i # adds up the rows 
+  #determines what graph it will get
+  if(i==100){
+    hist(Zn,xlab="z", ylab="Density"  ,main=substitute(paste('PDF Density of ',Z[100])), prob=TRUE, ylim = c(0,3.5))
+    curve(dnorm(x, mu,sqrt(4/(3*100))), add = TRUE)
+  }
+  else if (i==30){
+    hist(Zn,xlab="z", ylab="Density" , main=substitute(paste('PDF Density of ',Z[30])), prob=TRUE, ylim = c(0,2) )
+    curve(dnorm(x, mu,sqrt(4/(3*30))), add = TRUE)
+  }
+   else if (i==10){
+    hist(Zn,xlab="z", ylab="Density" , main=substitute(paste('PDF Density of ',Z[10])), prob=TRUE, ylim = c(0,1.2) )
+    curve(dnorm(x, mu,sqrt(4/(3*10))), add = TRUE)
+   }
+   else if (i==3){
+    hist(Zn,xlab="z", ylab="Density" , main=substitute(paste('PDF Density of ',Z[3])), prob=TRUE, ylim = c(0,0.6) )
+    curve(dnorm(x, mu,sqrt(4/(3*3))), add = TRUE)
+   }
+   else if (i==2){
+    hist(Zn,xlab="z", ylab="Density" , main=substitute(paste('PDF Density of ',Z[2])), prob=TRUE, ylim = c(0,0.5) )
+    curve(dnorm(x, mu,sqrt(4/(3*2))), add = TRUE)
+  }
+}
+```
+## d
+```{r}
+set.seed(123)
+double <-c(2,1,2,1,2,1,2,1,2,1) #vector for weights of 1-10
+
+#generating sample rolls with probability of double for odd numbers
+x.dice <- replicate(100,replicate(10000, sample(1:10, 1, prob = double)))
+
+sn <-c(2,3,10,30,100)
+sn1 <-c("2","3","10","30","100")
+
+muDice<-5.3
+
+#figure out what binwidth is 
+
+Zn1Dice<- x.dice[,1]# macking the first graph
+hist(Zn1Dice,xlab="z of dice roll", ylab="Density" ,main=substitute(paste('Dice Roll PDF Density of ',Z[1])), prob=TRUE, ylim =c(0,0.4),breaks = seq(from=0, to=10, by=1/2))
+curve(dnorm(x, mu,sqrt(74/9)), add = TRUE)
+
+for(i in sn){
+  ZnDice<-rowSums(x.dice[,1:i])/i# adds up the rows
+  #determines what graph it gets 
+  if(i==100){
+    hist(ZnDice,xlab="z", ylab="Density"  ,main=substitute(paste('Dice Roll PDF Density of ',Z[100])), prob=TRUE, ylim = c(0,1.5),breaks = seq(from=4, to=7, by=1/101) )
+    curve(dnorm(x, muDice,sqrt(74/(9*100))), add = TRUE)
+  }
+  else if (i==30){
+    hist(ZnDice,xlab="z", ylab="Density" , main=substitute(paste('Dice RollPDF Density of ',Z[30])), prob=TRUE, ylim = c(0,1),breaks = seq(from=2, to=8, by=1/31) )
+    curve(dnorm(x, muDice,sqrt(74/(9*30))), add = TRUE)
+  }
+   else if (i==10){
+    hist(ZnDice,xlab="z", ylab="Density" , main=substitute(paste('Dice Roll PDF Density of ',Z[10])), prob=TRUE, ylim = c(0,0.5),breaks = seq(from=1, to=9, by=1/11) )
+    curve(dnorm(x, muDice,sqrt(74/(9*10))), add = TRUE)
+   }
+   else if (i==3){
+    hist(ZnDice,xlab="z", ylab="Density" , main=substitute(paste('Dice Roll PDF Density of ',Z[3])), prob=TRUE, ylim = c(0,0.35),breaks = seq(from=0, to=10, by=1/4) )
+    curve(dnorm(x, muDice,sqrt(74/(9*3))), add = TRUE)
+   }
+   else if (i==2){
+    hist(ZnDice,xlab="z", ylab="Density" , main=substitute(paste('Dice Roll PDF Density of ',Z[2])), prob=TRUE, ylim = c(0,0.3),breaks = seq(from=0, to=10, by=1/3) )
+    curve(dnorm(x, muDice,sqrt(74/(9*2))), add = TRUE)
+  }
+}
+```
+
+
+
+
+
